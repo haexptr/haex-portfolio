@@ -1,21 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, Briefcase, Mail } from 'lucide-react';
+import { Menu, X, Home, User, Briefcase, Mail } from 'lucide-react';
 
-const Navbar = ({ activeSection, setActiveSection }) => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      
+      // Update active section based on scroll position
+      const sections = ['home', 'about', 'portfolio', 'contact'];
+      const currentSection = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
+      
+      if (currentSection) {
+        setActiveSection(currentSection);
+      }
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offsetTop = element.offsetTop - 80; // Offset for fixed navbar
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    }
+    setActiveSection(sectionId);
+    setIsOpen(false); // Close mobile menu after click
+  };
+
   const navItems = [
-    { id: 'home', label: 'Home', icon: User },
+    { id: 'home', label: 'Home', icon: Home },
     { id: 'about', label: 'About', icon: User },
     { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
     { id: 'contact', label: 'Contact', icon: Mail },
@@ -32,12 +62,16 @@ const Navbar = ({ activeSection, setActiveSection }) => {
     >
       <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
-          {/* Logo */}
+          {/* Logo - Updated to HAEX.DEV */}
           <motion.div
-            className="text-2xl font-bold font-futuristic"
+            className="text-2xl font-bold cursor-pointer"
+            style={{
+              fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', 'Courier New', monospace",
+            }}
             whileHover={{ scale: 1.05 }}
+            onClick={() => scrollToSection('home')}
           >
-            <span className="text-white">TRI</span>
+            <span className="text-white">HAEX</span>
             <span className="text-cyan-400">.</span>
             <span className="text-white">DEV</span>
           </motion.div>
@@ -52,7 +86,7 @@ const Navbar = ({ activeSection, setActiveSection }) => {
                     ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/20'
                     : 'text-gray-300 hover:text-cyan-400'
                 }`}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => scrollToSection(item.id)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -93,10 +127,7 @@ const Navbar = ({ activeSection, setActiveSection }) => {
                         ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/20'
                         : 'text-gray-300 hover:text-cyan-400 hover:bg-gray-700/50'
                     }`}
-                    onClick={() => {
-                      setActiveSection(item.id);
-                      setIsOpen(false);
-                    }}
+                    onClick={() => scrollToSection(item.id)}
                     whileHover={{ x: 10 }}
                     whileTap={{ scale: 0.95 }}
                   >

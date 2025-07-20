@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Globe } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Github, Linkedin, Instagram, Globe } from 'lucide-react';
 import GlowButton from './GlowButton';
 
 const Contact = () => {
@@ -20,10 +20,34 @@ const Contact = () => {
     });
   };
 
+  // FIXED: Send Message to Real Email
   const handleSubmit = async () => {
+    // Validate form
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus(null), 3000);
+      return;
+    }
+
     setIsSubmitting(true);
+
+    // Create mailto link with form data
+    const subject = encodeURIComponent(`Portfolio Contact: ${formData.subject}`);
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\n` +
+      `Email: ${formData.email}\n` +
+      `Subject: ${formData.subject}\n\n` +
+      `Message:\n${formData.message}\n\n` +
+      `---\n` +
+      `Sent from Haex Putra Portfolio Website`
+    );
     
-    // Simulate form submission
+    const mailtoLink = `mailto:haexputra@gmail.com?subject=${subject}&body=${body}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Show success message and reset form
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitStatus('success');
@@ -32,7 +56,7 @@ const Contact = () => {
       setTimeout(() => {
         setSubmitStatus(null);
       }, 3000);
-    }, 2000);
+    }, 1000);
   };
 
   const contactInfo = [
@@ -56,24 +80,31 @@ const Contact = () => {
     }
   ];
 
+  // FIXED: Social Links with Instagram Added & Real Links
   const socialLinks = [
     {
       icon: Github,
       label: 'GitHub',
-      href: '#',
-      color: 'hover:text-gray-400'
+      href: 'https://github.com/haexptr',
+      color: 'hover:text-gray-300'
     },
     {
       icon: Linkedin,
       label: 'LinkedIn',
-      href: '#',
+      href: 'https://id.linkedin.com/in/haexputra',
       color: 'hover:text-blue-400'
     },
     {
+      icon: Instagram,
+      label: 'Instagram',
+      href: 'https://www.instagram.com/xeahz/',
+      color: 'hover:text-pink-400'
+    },
+    {
       icon: Globe,
-      label: 'Behance',
-      href: '#',
-      color: 'hover:text-purple-400'
+      label: 'Website',
+      href: 'https://haex-portfolio.vercel.app/',
+      color: 'hover:text-green-400'
     }
   ];
 
@@ -130,7 +161,7 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Social Links */}
+            {/* FIXED: Social Links with Instagram */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 border border-gray-700/50">
               <h3 className="text-xl font-bold text-white mb-6">Follow Me</h3>
               
@@ -139,6 +170,8 @@ const Contact = () => {
                   <motion.a
                     key={index}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={`w-12 h-12 bg-gray-700/50 rounded-lg flex items-center justify-center 
                       text-gray-400 transition-all duration-300 ${social.color}`}
                     whileHover={{ 
@@ -173,7 +206,7 @@ const Contact = () => {
                   <div className="text-gray-400 text-sm">Satisfaction</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-cyan-400 mb-1">3+</div>
+                  <div className="text-2xl font-bold text-cyan-400 mb-1">2+</div>
                   <div className="text-gray-400 text-sm">Years Exp</div>
                 </div>
               </div>
@@ -261,25 +294,31 @@ const Contact = () => {
                 />
               </div>
               
-              <GlowButton
+              {/* FIXED: Send Message Button - Clean & Consistent */}
+              <motion.button
                 onClick={handleSubmit}
-                variant="primary"
-                className="w-full justify-center"
                 disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-cyan-400 to-blue-500 
+                  text-gray-900 font-semibold rounded-lg transition-all duration-300 
+                  hover:from-cyan-300 hover:to-blue-400 hover:shadow-lg hover:shadow-cyan-400/25
+                  active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               >
                 {isSubmitting ? (
-                  <div className="flex items-center">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                    Sending...
-                  </div>
+                  <>
+                    <div className="w-5 h-5 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" />
+                    <span>Sending...</span>
+                  </>
                 ) : (
                   <>
-                    <Send className="w-5 h-5 mr-2" />
-                    Send Message
+                    <Send className="w-5 h-5" />
+                    <span>Send Message</span>
                   </>
                 )}
-              </GlowButton>
+              </motion.button>
               
+              {/* Success/Error Messages */}
               {submitStatus === 'success' && (
                 <motion.div
                   className="text-green-400 text-center text-sm bg-green-400/10 border border-green-400/20 
@@ -288,6 +327,17 @@ const Contact = () => {
                   animate={{ opacity: 1, y: 0 }}
                 >
                   ✓ Message sent successfully! I'll get back to you soon.
+                </motion.div>
+              )}
+              
+              {submitStatus === 'error' && (
+                <motion.div
+                  className="text-red-400 text-center text-sm bg-red-400/10 border border-red-400/20 
+                    rounded-lg p-3"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  ⚠ Please fill in all fields before sending.
                 </motion.div>
               )}
             </div>

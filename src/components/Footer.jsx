@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Globe } from 'lucide-react';
+import { Github, Linkedin, Globe, Instagram, MapPin, Mail, Phone } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <div className="text-2xl font-bold font-futuristic mb-4">
-              <span className="text-white">TRI</span>
+              <span className="text-white">HAEX</span>
               <span className="text-cyan-400">.</span>
               <span className="text-white">DEV</span>
             </div>
@@ -19,13 +19,16 @@ const Footer = () => {
             </p>
             <div className="flex space-x-4">
               {[
-                { icon: Github, href: '#', label: 'GitHub' },
-                { icon: Linkedin, href: '#', label: 'LinkedIn' },
-                { icon: Globe, href: '#', label: 'Behance' },
+                { icon: Github, href: 'https://github.com/haexptr', label: 'GitHub' },
+                { icon: Linkedin, href: 'https://id.linkedin.com/in/haexputra', label: 'LinkedIn' },
+                { icon: Instagram, href: 'https://www.instagram.com/xeahz/', label: 'Instagram' },
+                { icon: Globe, href: 'https://haex-portfolio.vercel.app/', label: 'Portfolio' },
               ].map((social, index) => (
                 <motion.a
                   key={index}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center 
                     text-gray-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300"
                   whileHover={{ scale: 1.1, y: -2 }}
@@ -59,9 +62,18 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Get in Touch</h4>
             <div className="space-y-2 text-gray-400">
-              <p>📍 Sidoarjo, Indonesia</p>
-              <p>✉️ Haexputra@gmail.com</p>
-              <p>📞 +62 812 3311 6616</p>
+              <div className="flex items-center space-x-2">
+                <MapPin size={16} className="text-cyan-400" />
+                <p>Sidoarjo, Indonesia</p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Mail size={16} className="text-cyan-400" />
+                <p>Haexputra@gmail.com</p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Phone size={16} className="text-cyan-400" />
+                <p>+62 812 3311 6616</p>
+              </div>
             </div>
             
             {/* Quick Stats */}
@@ -71,7 +83,7 @@ const Footer = () => {
                 <div className="text-gray-400 text-xs">GPA</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-cyan-400">50+</div>
+                <div className="text-xl font-bold text-cyan-400">5+</div>
                 <div className="text-gray-400 text-xs">Projects</div>
               </div>
             </div>
@@ -81,9 +93,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-gray-700/50 mt-8 pt-8 text-center">
           <p className="text-gray-400">
-            © 2024 Tri Wahyudi Ha Ex Saputra. All rights reserved. Made with{' '}
-            <span className="text-red-400">❤️</span> and{' '}
-            <span className="text-cyan-400">React</span>
+            © 2025 Tri Wahyudi Ha Ex Saputra. All rights reserved
           </p>
         </div>
       </div>

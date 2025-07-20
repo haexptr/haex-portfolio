@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Import Components
@@ -6,7 +7,6 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Portfolio from './components/Portfolio';
-import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ParticleField from './components/ParticleField';
@@ -23,6 +23,40 @@ const App = () => {
     }, 2000);
 
     return () => clearTimeout(timer);
+  }, []);
+
+  // Scroll to section function
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+      setActiveSection(sectionId);
+    }
+  };
+
+  // Track active section on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'about', 'portfolio', 'contact'];
+      const currentSection = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
+      
+      if (currentSection) {
+        setActiveSection(currentSection);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Loading Screen
@@ -53,39 +87,41 @@ const App = () => {
   }
 
   return (
-    <div className="bg-gray-900 text-white font-tech overflow-x-hidden">
-      {/* Background Effects */}
-      <ParticleField />
-      
-      {/* Navigation */}
-      <Navbar activeSection={activeSection} setActiveSection={setActiveSection} />
-      
-      {/* Main Content */}
-      <main>
-        <section id="home">
-          <Hero />
-        </section>
+    <Router>
+      <div className="bg-gray-900 text-white font-tech overflow-x-hidden">
+        {/* Background Effects */}
+        <ParticleField />
         
-        <section id="about">
-          <About />
-        </section>
+        {/* Navigation */}
+        <Navbar 
+          activeSection={activeSection} 
+          setActiveSection={setActiveSection}
+          scrollToSection={scrollToSection}
+        />
         
-        <section id="portfolio">
-          <Portfolio />
-        </section>
+        {/* Main Content */}
+        <main>
+          <section id="home">
+            <Hero scrollToSection={scrollToSection} />
+          </section>
+          
+          <section id="about">
+            <About />
+          </section>
+          
+          <section id="portfolio">
+            <Portfolio />
+          </section>
+          
+          <section id="contact">
+            <Contact />
+          </section>
+        </main>
         
-        <section id="testimonials">
-          <Testimonials />
-        </section>
-        
-        <section id="contact">
-          <Contact />
-        </section>
-      </main>
-      
-      {/* Footer */}
-      <Footer />
-    </div>
+        {/* Footer */}
+        <Footer />
+      </div>
+    </Router>
   );
 };
 
